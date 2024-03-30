@@ -18,8 +18,6 @@ class Version {
 
 		QVersionNumber version;
 		QString suffix;
-
 };
-
 
 #endif //MIRAYA_VERSION_H
