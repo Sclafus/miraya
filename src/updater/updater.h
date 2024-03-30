@@ -11,6 +11,9 @@
 #include <QObject>
 #include <QVersionNumber>
 
+#include "updaterurls.h"
+#include "version.h"
+
 class Updater : public QObject
 {
 	Q_OBJECT
@@ -21,8 +24,11 @@ public:
 signals:
 	void newVersionAvailable();
 
-private slots:
+private:
 	void onReplyFinished(QNetworkReply *reply);
+//	static bool isPreRelease(const QString& version);
+	static QUrl getUrl();
+	static Version getLatestVersion(const QJsonDocument& json);
 };
 
 #endif // UPDATER_H
