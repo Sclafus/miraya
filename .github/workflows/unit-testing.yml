@@ -1,0 +1,43 @@
+name: "Unit Tests"
+
+on:
+  push:
+    branches: [ "senpai", "kouhai" ]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [ "senpai", "kouhai" ]
+
+jobs:
+  testing:
+    name: Testing
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.1
+
+      - name: Cache Qt dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ github.workspace }}/qt
+          key: qt-${{ runner.os }}-${{ hashFiles('**/install-qt-action/**') }}
+
+      - name: Install Qt
+        if: steps.cache.outputs.cache-hit != 'true'
+        uses: jurplel/install-qt-action@v3.3.0
+        with:
+          version: '6.6.2'
+          modules: 'qtwebsockets'
+          dir: ${{ github.workspace }}/qt
+
+      - name: Run unit tests
+        uses: HorstBaerbel/action-ctest@1.1
+        with:
+          sourcedir: 'tests'
+          builddir: 'build'
+          cmakeoptions: ''
+          ctestoptions: '--output-junit testResults.xml'
