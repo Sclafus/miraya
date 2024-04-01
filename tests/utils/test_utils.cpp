@@ -120,7 +120,6 @@ QList<TestData> UtilsTest::getTestData() {
 	                                      << QStringList{random1, random2};
 	QTest::newRow("combined | 2 randoms reversed") << "hello, world! " + random2 + " hello, world!" + random1
 	                                               << QStringList{random2, random1};
-
 }
 
 [[maybe_unused]] void UtilsTest::testGetOsuBeatmapUrls() {
