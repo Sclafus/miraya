@@ -25,7 +25,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ github.workspace }}/qt
-          key: qt-${{ runner.os }}-${{ hashFiles('**/install-qt-action/**') }}
+          key: qt-${{ runner.os }}-${{ hashFiles('**/qt/**') }}
 
       - name: Install Qt
         if: steps.cache.outputs.cache-hit != 'true'
@@ -35,10 +35,14 @@ jobs:
           modules: 'qtwebsockets'
           dir: ${{ github.workspace }}/qt
 
-      - name: Run unit tests
-        uses: HorstBaerbel/action-ctest@1.1
+      - name: Build
+        run: cd tests && mkdir build && cd build && cmake .. && make
+
+      - name: Run tests
+        run: ctest --output-junit testResults.xml
+
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v4
+        if: success() || failure() # always run even if the previous step fails
         with:
-          sourcedir: 'tests'
-          builddir: 'build'
-          cmakeoptions: ''
-          ctestoptions: '--output-junit testResults.xml'
+          report_paths: '**/tests/build/testResults.xml'
