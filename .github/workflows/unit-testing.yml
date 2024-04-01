@@ -39,7 +39,7 @@ jobs:
         run: cd tests && mkdir build && cd build && cmake .. && make
 
       - name: Run tests
-        run: ctest --output-junit testResults.xml
+        run: cd tests/build && ctest --output-junit testResults.xml
 
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v4
