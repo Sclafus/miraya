@@ -7,11 +7,12 @@
 #include <QMessageBox>
 #include <QObject>
 
-class About : public QObject
-{
+class About : public QObject {
 	Q_OBJECT
-public:
-	static void show();
+
+	public:
+		static QMessageBox* createMessageBox(QWidget *parent = nullptr);
+		static void show();
 };
 
 #endif // ABOUT_H
