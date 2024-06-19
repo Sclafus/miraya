@@ -5,11 +5,11 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 
-class GosuMemoryDataWrapper
-{
+// @formatter:off
+class GosuMemoryDataWrapper {
 	public:
 		GosuMemoryDataWrapper();
-		GosuMemoryDataWrapper(QString &data);
+		explicit GosuMemoryDataWrapper(QString &data);
 		QString getMapName();
 		QString getMapArtist();
 		QString getMapMapper();
@@ -21,8 +21,10 @@ class GosuMemoryDataWrapper
 		QString data;
 		QJsonObject json;
 
-		void parseData();
-		QJsonObject getBeatmapMetadata();
+	void parseData();
+
+	QJsonObject getBeatmapMetadata();
 };
+// @formatter:on
 
 #endif // GOSUMEMORYDATAWRAPPER_H

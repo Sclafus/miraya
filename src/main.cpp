@@ -1,18 +1,17 @@
 #include <QApplication>
 #include <QIcon>
-#include <QSettings>
 #include "mainwindow.h"
 
 int main(int argc, char **argv) {
 	QApplication app(argc, argv);
-	app.setOrganizationName("miraya");
-	app.setOrganizationDomain("github.com/MirayaProject");
-	app.setApplicationName("bot");
-	app.setApplicationVersion("1.3.0-alpha.1");
-	#ifdef Q_OS_LINUX
-		app.setWindowIcon(QIcon(":/resources/logo/logo.png"));
-	#endif
+	QApplication::setOrganizationName("miraya");
+	QApplication::setOrganizationDomain("github.com/MirayaProject");
+	QApplication::setApplicationName("bot");
+	QApplication::setApplicationVersion("1.3.0-alpha.1");
+#ifdef Q_OS_LINUX
+	QApplication::setWindowIcon(QIcon(":/resources/logo/logo.png"));
+#endif
 	MainWindow mw;
 	mw.show();
-	return app.exec();
+	return QApplication::exec();
 }

@@ -53,6 +53,12 @@ compile_commands.json
 
 # Cmake builds
 build*
+bin*
 
-#Visual Studio
+# VSCode
 .vscode
+
+# Testing stuff
+*.conf
+*.json
+

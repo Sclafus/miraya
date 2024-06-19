@@ -9,21 +9,22 @@
 
 #include "osu/data/gosu/gosumemorydatawrapper.h"
 
+// @formatter:off
 class GosumemoryClient : public QObject {
 	Q_OBJECT
 
 	public:
 		explicit GosumemoryClient(QObject *parent = nullptr);
-		explicit GosumemoryClient(const QUrl &url, QObject *parent = nullptr);
+		[[maybe_unused]] explicit GosumemoryClient(QUrl url, QObject *parent = nullptr);
 		void enableRead(bool enable);
 		void init();
 		void restart();
-		void setUrl(const QUrl &url);
+		void setUrl(const QUrl &newUrl);
 
 	private:
 		void initSignals();
 		void refreshData();
-		bool readEnabled;
+		bool readEnabled{};
 		QWebSocket socket;
 		QUrl url;
 
@@ -37,5 +38,6 @@ class GosumemoryClient : public QObject {
 		void onTextMessageReceived(QString message);
 		void onDisconnected();
 };
+// @formatter:on
 
 #endif

@@ -3,11 +3,12 @@
 
 #include <QString>
 
-class StreamingServiceDataWrapper
-{
-public:
-	virtual QString getMessage() = 0;
-	virtual QString getUsername() = 0;
+// @formatter:off
+class StreamingServiceDataWrapper {
+	public:
+		virtual QString getMessage() = 0;
+		virtual QString getUsername() = 0;
 };
+// @formatter:on
 
 #endif // STREAMINGSERVICEDATAWRAPPER_H

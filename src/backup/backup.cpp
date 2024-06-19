@@ -1,14 +1,13 @@
 #include "backup.h"
 
 
-void Backup::backup(QString filePath, bool includeSensitiveInfo)
-{
+void Backup::backup(QString filePath, bool includeSensitiveInfo) {
 	if (filePath.isEmpty()) {
 		return;
 	}
 
 	// adding .json if needed
-	if(!filePath.endsWith(".json")) {
+	if (!filePath.endsWith(".json")) {
 		filePath.append(".json");
 	}
 
@@ -26,13 +25,13 @@ void Backup::backup(QString filePath, bool includeSensitiveInfo)
 	QStringList keys = settings.allKeys();
 
 	// sensitive info must be excluded
-	if(!includeSensitiveInfo) {
-		keys.removeIf([](const QString& key){
+	if (!includeSensitiveInfo) {
+		keys.removeIf([](const QString &key) {
 			return key.startsWith("osuirc") || key.startsWith("twitch");
 		});
 	}
 
-	for(const QString& key: keys){
+	for (const QString &key: keys) {
 		QString value = settings.value(key).toString();
 		jsonObject.insert(key, QJsonValue(value));
 	}
@@ -45,8 +44,7 @@ void Backup::backup(QString filePath, bool includeSensitiveInfo)
 	qDebug() << "[Backup] Backup completed";
 }
 
-void Backup::restore(QString filePath)
-{
+void Backup::restore(const QString &filePath) {
 	if (filePath.isEmpty()) {
 		return;
 	}
@@ -65,7 +63,7 @@ void Backup::restore(QString filePath)
 
 	QSettings settings;
 	QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonString.toUtf8());
-	if (!jsonDoc.isNull()){
+	if (!jsonDoc.isNull()) {
 		QJsonObject jsonObject = jsonDoc.object();
 		for (auto it = jsonObject.begin(); it != jsonObject.end(); ++it) {
 			QString key = it.key();

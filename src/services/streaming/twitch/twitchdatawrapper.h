@@ -4,18 +4,19 @@
 #include <QString>
 #include "streamingServiceDataWrapper.h"
 
-class TwitchDataWrapper : public StreamingServiceDataWrapper
-{
-public:
-	TwitchDataWrapper(QString &data);
-	QString getMessage();
-	QString getUsername();
+// @formatter:off
+class TwitchDataWrapper : public StreamingServiceDataWrapper {
+	public:
+		explicit TwitchDataWrapper(QString &data);
+		QString getMessage() override;
+		QString getUsername() override;
 
-private:
-	void parseData();
-	QString data;
-	QString message;
-	QString username;
+	private:
+		void parseData();
+		QString data;
+		QString message;
+		QString username;
 };
+// @formatter:on
 
 #endif // TWITCHDATAWRAPPER_H

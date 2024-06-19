@@ -1,7 +1,6 @@
 #include "osuapi.h"
 
-OsuApi::OsuApi()
-{
+OsuApi::OsuApi() {
 	qDebug() << "[OsuApi] Init";
 	QSettings settings;
 	clientId = settings.value("osuapi/clientId").toString();
@@ -10,14 +9,12 @@ OsuApi::OsuApi()
 
 	if (!(clientId.isEmpty() || clientSecret.isEmpty())) {
 		token = ClientCredentialsFlow::getToken(clientId, clientSecret, oAuthUrl);
-	}
-	else {
+	} else {
 		qDebug() << "[OsuApi] Client ID or Client Secret are empty";
 	}
 }
 
-QJsonObject OsuApi::getBeatmapInfo(int beatmapId)
-{
+QJsonObject OsuApi::getBeatmapInfo(int beatmapId) {
 	// TODO: A lot can be split into smaller functions
 	// TODO: also, the QEventLoop is making everything synchronous, which is suboptimal to say the least.
 	qDebug() << "[OsuApi] getBeatmapInfo";
@@ -29,8 +26,8 @@ QJsonObject OsuApi::getBeatmapInfo(int beatmapId)
 	QString accessToken = token["access_token"].toString();
 
 	request.setRawHeader(
-		QByteArray("Authorization"),
-		(QString("Bearer %1").arg(accessToken)).toUtf8()
+			QByteArray("Authorization"),
+			(QString("Bearer %1").arg(accessToken)).toUtf8()
 	);
 
 	QNetworkReply *reply = manager.get(request);
@@ -49,10 +46,9 @@ QJsonObject OsuApi::getBeatmapInfo(int beatmapId)
 		return obj;
 	}
 	qDebug() << "[OsuApi] Error: " << reply->errorString();
-	return QJsonObject();
+	return {};
 }
 
-bool OsuApi::isValid()
-{
+bool OsuApi::isValid() {
 	return !(clientId.isEmpty() || clientSecret.isEmpty());
 }

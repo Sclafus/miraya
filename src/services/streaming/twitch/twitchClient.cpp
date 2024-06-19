@@ -1,41 +1,39 @@
 #include "twitchClient.h"
 
-TwitchClient::TwitchClient(
-	const QUrl &url,
-	const QString &botNick,
-	const QString &oauth,
-	const QString &channel,
-	QObject *parent
-) : QObject(parent), url(url), oauth(oauth), botNick(botNick), channel(channel)
-{
+#include <utility>
+
+[[maybe_unused]] TwitchClient::TwitchClient(
+			 QUrl url,
+			 QString botNick,
+			 QString oauth,
+			 QString channel,
+			 QObject *parent
+) : QObject(parent), url(std::move(url)), oauth(std::move(oauth)), botNick(std::move(botNick)),
+    channel(std::move(channel)) {
 	initSignals();
 }
 
 
-TwitchClient::TwitchClient(QObject *parent) : QObject(parent)
-{
+TwitchClient::TwitchClient(QObject *parent) : QObject(parent) {
 	initSignals();
 }
 
 
-void TwitchClient::initSignals()
-{
+void TwitchClient::initSignals() {
 	connect(&socket, &QWebSocket::connected, this, &TwitchClient::onConnected);
 	connect(&socket, &QWebSocket::textMessageReceived, this, &TwitchClient::onTextMessageReceived);
 	connect(&socket, &QWebSocket::disconnected, this, &TwitchClient::onDisconnected);
 }
 
 
-void TwitchClient::init()
-{
+void TwitchClient::init() {
 	refreshData();
 	qDebug() << "[TwitchClient] Connecting to: " << url.toString();
 	socket.open(QUrl(url));
 }
 
 
-void TwitchClient::refreshData()
-{
+void TwitchClient::refreshData() {
 	qDebug() << "[TwitchClient] Refreshing data...";
 	QSettings settings;
 
@@ -46,29 +44,25 @@ void TwitchClient::refreshData()
 }
 
 
-void TwitchClient::restart()
-{
+void TwitchClient::restart() {
 	socket.close();
 	init();
 }
 
 
-void TwitchClient::sendChatMessage(QString message)
-{
+void TwitchClient::sendChatMessage(const QString &message) {
 	qDebug() << "[TwitchClient] Sending channel message: " << message;
 	socket.sendTextMessage("PRIVMSG #" + channel + " :" + message);
 }
 
 
-void TwitchClient::sendMessage(QString message)
-{
+void TwitchClient::sendMessage(const QString &message) {
 	qDebug() << "[TwitchClient] Sending message: " << message;
 	socket.sendTextMessage(message);
 }
 
 
-void TwitchClient::onConnected()
-{
+void TwitchClient::onConnected() {
 	qDebug() << "[TwitchClient] Connected to: " << url.toString();
 	emit connected();
 	sendMessage("PASS " + oauth);
@@ -77,8 +71,7 @@ void TwitchClient::onConnected()
 }
 
 
-void TwitchClient::onTextMessageReceived(QString message)
-{
+void TwitchClient::onTextMessageReceived(QString message) {
 	auto wrappedMessage = TwitchDataWrapper(message);
 	qDebug() << "[TwitchClient] Message received from: " << url.toString();
 
@@ -96,15 +89,13 @@ void TwitchClient::onTextMessageReceived(QString message)
 }
 
 
-void TwitchClient::handlePing()
-{
+void TwitchClient::handlePing() {
 	qDebug() << "[TwitchClient] Handling ping";
 	sendMessage("PONG :tmi.twitch.tv");
 }
 
 
-bool TwitchClient::shouldBeFiltered(QString message)
-{
+bool TwitchClient::shouldBeFiltered(const QString &message) {
 	// TODO: this can be done better, i think.
 	if (message.startsWith("PING")) {
 		handlePing();
@@ -122,8 +113,7 @@ bool TwitchClient::shouldBeFiltered(QString message)
 }
 
 
-bool TwitchClient::isCommand(QString message)
-{
+bool TwitchClient::isCommand(const QString &message) {
 	if (message.startsWith("!")) {
 		return true;
 	}
@@ -131,32 +121,27 @@ bool TwitchClient::isCommand(QString message)
 }
 
 
-void TwitchClient::onDisconnected()
-{
+void TwitchClient::onDisconnected() {
 	qDebug() << "[TwitchClient] Disconnected from:" << url.toString();
 	emit disconnected();
 }
 
 
-void TwitchClient::setChannel(QString channel)
-{
-	this->channel = channel;
+void TwitchClient::setChannel(QString newChannel) {
+	channel = std::move(newChannel);
 }
 
 
-void TwitchClient::setBotNick(QString botNick)
-{
-	this->botNick = botNick;
+void TwitchClient::setBotNick(QString newBotNick) {
+	botNick = std::move(newBotNick);
 }
 
 
-void TwitchClient::setOauth(QString oauth)
-{
-	this->oauth = oauth;
+void TwitchClient::setOauth(QString newOauth) {
+	oauth = std::move(newOauth);
 }
 
 
-void TwitchClient::setUrl(QUrl url)
-{
-	this->url = QUrl(url);
+void TwitchClient::setUrl(QUrl newUrl) {
+	url = QUrl(std::move(newUrl));
 }

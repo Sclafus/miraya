@@ -2,9 +2,8 @@
 #include "ui_preferences.h"
 
 Preferences::Preferences(QWidget *parent) :
-	QDialog(parent),
-	ui(new Ui::Preferences)
-{
+		QDialog(parent),
+		ui(new Ui::Preferences) {
 	ui->setupUi(this);
 	connect(ui->listWidget, &QListWidget::currentItemChanged, this, &Preferences::on_listWidget_currentItemChanged);
 	connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &Preferences::on_saveBtnClicked);
@@ -16,14 +15,12 @@ Preferences::Preferences(QWidget *parent) :
 }
 
 
-Preferences::~Preferences()
-{
+Preferences::~Preferences() {
 	delete ui;
 }
 
 
-void Preferences::setupUi()
-{
+void Preferences::setupUi() {
 	// TODO: this should be a standalone widget.
 	auto *portValidator = new QIntValidator(0, 65535, this);
 	ui->gosumemoryPortLineEdit->setValidator(portValidator);
@@ -33,18 +30,17 @@ void Preferences::setupUi()
 	// TODO: this should be a standalone widget.
 	QString IpRange = "(?:[0-1]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])";
 	QRegularExpression IpRegex("^" + IpRange + "\\." + IpRange + "\\." + IpRange + "\\." + IpRange + "$");
-	QRegularExpressionValidator *IpValidator = new QRegularExpressionValidator(IpRegex, this);
+	auto *IpValidator = new QRegularExpressionValidator(IpRegex, this);
 	ui->gosumemoryIpLineEdit->setValidator(IpValidator);
 
 	// TODO: this should be a standalone widget.
 	QRegularExpression oauthRegex("^oauth:.{30}$");
-	QRegularExpressionValidator *oauthValidator = new QRegularExpressionValidator(oauthRegex, this);
+	auto *oauthValidator = new QRegularExpressionValidator(oauthRegex, this);
 	ui->twitchBotOAuthLineEdit->setValidator(oauthValidator);
 }
 
 
-void Preferences::loadSettings()
-{
+void Preferences::loadSettings() {
 	loadGosuMemorySettings();
 	loadTwitchSettings();
 	loadOsuIrcSettings();
@@ -53,30 +49,26 @@ void Preferences::loadSettings()
 }
 
 
-void Preferences::loadTwitchSettings()
-{
+void Preferences::loadTwitchSettings() {
 	ui->twitchBotNickLineEdit->setText(settings.value("twitch/botNick").toString());
 	ui->twitchBotOAuthLineEdit->setText(settings.value("twitch/oauth").toString());
 	ui->twitchChannelLineEdit->setText(settings.value("twitch/channel").toString());
 }
 
 
-void Preferences::loadOsuApiSettings()
-{
+void Preferences::loadOsuApiSettings() {
 	ui->osuapiClientIdLineEdit->setText(settings.value("osuapi/clientId").toString());
 	ui->osuapiClientSecretLineEdit->setText(settings.value("osuapi/clientSecret").toString());
 }
 
 
-void Preferences::loadGosuMemorySettings()
-{
+void Preferences::loadGosuMemorySettings() {
 	ui->gosumemoryIpLineEdit->setText(settings.value("gosumemory/ip").toString());
 	ui->gosumemoryPortLineEdit->setText(settings.value("gosumemory/port").toString());
 }
 
 
-void Preferences::loadOsuIrcSettings()
-{
+void Preferences::loadOsuIrcSettings() {
 	ui->osuIrcNicknameLineEdit->setText(settings.value("osuirc/nick").toString());
 	ui->osuIrcPasswordLineEdit->setText(settings.value("osuirc/password").toString());
 	ui->osuIrcServerLineEdit->setText(settings.value("osuirc/server").toString());
@@ -84,14 +76,12 @@ void Preferences::loadOsuIrcSettings()
 }
 
 
-void Preferences::loadThemeSettings()
-{
+void Preferences::loadThemeSettings() {
 	auto darkModeSetting = settings.value("theme/darkMode");
 
-	if(darkModeSetting.isNull()){
+	if (darkModeSetting.isNull()) {
 		ui->themesDefaultRadio->setChecked(true);
-	}
-	else {
+	} else {
 		bool isDarkMode = darkModeSetting.toBool();
 		QRadioButton *button = isDarkMode ? ui->themesDarkRadio : ui->themesLightRadio;
 		button->setChecked(true);
@@ -99,17 +89,15 @@ void Preferences::loadThemeSettings()
 }
 
 
-void Preferences::on_saveBtnClicked()
-{
+void Preferences::on_saveBtnClicked() {
 	saveSettings();
-	QMessageBox().information(this, "Saved", "Settings saved");
+	QMessageBox::information(this, "Saved", "Settings saved");
 	emit themeChanged();
 	accept();
 }
 
 
-void Preferences::saveSettings()
-{
+void Preferences::saveSettings() {
 	settings.setValue("twitch/botNick", ui->twitchBotNickLineEdit->text().toLower());
 	settings.setValue("twitch/oauth", ui->twitchBotOAuthLineEdit->text());
 	settings.setValue("twitch/channel", ui->twitchChannelLineEdit->text().toLower());
@@ -129,26 +117,24 @@ void Preferences::saveSettings()
 
 	if (ui->themesDefaultRadio->isChecked()) {
 		settings.remove("theme/darkMode");
-	}
-	else {
+	} else {
 		settings.setValue("theme/darkMode", ui->themesDarkRadio->isChecked());
 	}
 }
 
 
-void Preferences::on_backupBtn_clicked()
-{
+void Preferences::on_backupBtn_clicked() {
 	QString message = QString("%1<br>%2").arg(
-		"Would you like to include sensitive informations in your backup file?",
-		"Anyone that has this information <b>will be able to access your accounts!</b>"
+			"Would you like to include sensitive informations in your backup file?",
+			"Anyone that has this information <b>will be able to access your accounts!</b>"
 	);
 
-	auto buttonAnswer = QMessageBox().question(
-		this,
-		"Sensitive information",
-		message,
-		QMessageBox::No | QMessageBox::Yes,
-		QMessageBox::No
+	auto buttonAnswer = QMessageBox::question(
+			this,
+			"Sensitive information",
+			message,
+			QMessageBox::No | QMessageBox::Yes,
+			QMessageBox::No
 	);
 	bool includeSensitiveInfo = buttonAnswer == QMessageBox::Yes;
 
@@ -157,18 +143,16 @@ void Preferences::on_backupBtn_clicked()
 }
 
 
-void Preferences::on_restoreBtn_clicked()
-{
+void Preferences::on_restoreBtn_clicked() {
 	QString filePath = QFileDialog::getOpenFileName(nullptr, "Import Settings", QString(), "JSON Files (*.json)");
 	Backup::restore(filePath);
 	// reloading
 	loadSettings();
-	QMessageBox().information(this, "Backup Restored", "Backup restored successfully");
+	QMessageBox::information(this, "Backup Restored", "Backup restored successfully");
 }
 
 
-void Preferences::on_listWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
-{
+void Preferences::on_listWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous) {
 	if (current == nullptr)
 		return;
 	auto index = ui->listWidget->currentRow();

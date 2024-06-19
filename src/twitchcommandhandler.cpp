@@ -1,39 +1,34 @@
 #include "twitchcommandhandler.h"
 
-TwitchCommandHandler::TwitchCommandHandler()
-{
+TwitchCommandHandler::TwitchCommandHandler() {
 	twitchData = nullptr;
 	gosumemoryData = nullptr;
 }
 
 
-TwitchCommandHandler::TwitchCommandHandler(TwitchDataWrapper *twitchData, GosuMemoryDataWrapper *gosumemoryData)
-{
-	this->twitchData = twitchData;
-	this->gosumemoryData = gosumemoryData;
+[[maybe_unused]] TwitchCommandHandler::TwitchCommandHandler(TwitchDataWrapper *newTwitchData,
+                                                            GosuMemoryDataWrapper *newGosumemoryData) {
+	twitchData = newTwitchData;
+	gosumemoryData = newGosumemoryData;
 }
 
 
-void TwitchCommandHandler::setGosumemoryData(GosuMemoryDataWrapper *gosumemoryData)
-{
-	this->gosumemoryData = gosumemoryData;
+void TwitchCommandHandler::setGosumemoryData(GosuMemoryDataWrapper *newGosumemoryData) {
+	gosumemoryData = newGosumemoryData;
 }
 
-GosuMemoryDataWrapper* TwitchCommandHandler::getGosumemoryData()
-{
+GosuMemoryDataWrapper *TwitchCommandHandler::getGosumemoryData() {
 	return gosumemoryData;
 }
 
 
-TwitchDataWrapper* TwitchCommandHandler::getTwitchData()
-{
+[[maybe_unused]] TwitchDataWrapper *TwitchCommandHandler::getTwitchData() {
 	return twitchData;
 }
 
 
-void TwitchCommandHandler::setTwitchData(TwitchDataWrapper *twitchData)
-{
-	this->twitchData = twitchData;
+void TwitchCommandHandler::setTwitchData(TwitchDataWrapper *newTwitchData) {
+	twitchData = newTwitchData;
 }
 
 
@@ -44,10 +39,8 @@ void TwitchCommandHandler::setTwitchData(TwitchDataWrapper *twitchData)
  *
  * @throws None
  */
-QString TwitchCommandHandler::getResponse()
-{
+QString TwitchCommandHandler::getResponse() {
 	QString command = twitchData->getMessage();
-	QSettings settings;
 
 	// handling !commands
 	if (command.startsWith("!commands")) {
@@ -57,17 +50,16 @@ QString TwitchCommandHandler::getResponse()
 	// gosumemory dependent commands
 	if (command.startsWith("!np") && gosumemoryData != nullptr) {
 		return getResponseNowPlaying();
-	}
-	else if (command.startsWith("!skin") && gosumemoryData != nullptr) {
+	} else if (command.startsWith("!skin") && gosumemoryData != nullptr) {
 		return getResponseSkin();
 	}
 
 	// static user commands
 	QString response = getResponseStaticCommands();
-	if (!response.isEmpty()){
+	if (!response.isEmpty()) {
 		return response;
 	}
-	return QString();
+	return {};
 }
 
 /**
@@ -78,14 +70,13 @@ QString TwitchCommandHandler::getResponse()
  *
  * @throws None
  */
-QString TwitchCommandHandler::getResponseStaticCommands()
-{
+QString TwitchCommandHandler::getResponseStaticCommands() {
 	QSettings settings;
 	QString command = twitchData->getMessage();
 
 	settings.beginGroup("command");
 	QStringList commands = settings.childKeys();
-	auto it = std::find_if(commands.begin(), commands.end(), [&](const QString& savedCommand){
+	auto it = std::find_if(commands.begin(), commands.end(), [&](const QString &savedCommand) {
 		return command.startsWith(savedCommand);
 	});
 	if (it != commands.end()) {
@@ -93,7 +84,7 @@ QString TwitchCommandHandler::getResponseStaticCommands()
 		return response;
 	}
 	settings.endGroup();
-	return QString();
+	return {};
 }
 
 /**
@@ -103,12 +94,11 @@ QString TwitchCommandHandler::getResponseStaticCommands()
  *
  * @throws None
  */
-QString TwitchCommandHandler::getResponseAllCommands()
-{
+QString TwitchCommandHandler::getResponseAllCommands() {
 	QSettings settings;
 	QString command = twitchData->getMessage();
 	if (!command.startsWith("!commands")) {
-		return QString();
+		return {};
 	}
 
 	settings.beginGroup("command");
@@ -124,8 +114,7 @@ QString TwitchCommandHandler::getResponseAllCommands()
  *
  * @return QString of the currently playing song's information
  */
-QString TwitchCommandHandler::getResponseNowPlaying()
-{
+QString TwitchCommandHandler::getResponseNowPlaying() {
 	QString mapName = gosumemoryData->getMapName();
 	QString mapArtist = gosumemoryData->getMapArtist();
 	QString mapDiff = gosumemoryData->getMapDifficulty();
@@ -141,8 +130,7 @@ QString TwitchCommandHandler::getResponseNowPlaying()
  *
  * @throws None
  */
-QString TwitchCommandHandler::getResponseSkin()
-{
+QString TwitchCommandHandler::getResponseSkin() {
 	QSettings settings;
 	QString skinName = gosumemoryData->getSkinName();
 	QString skinResponse = QString("skin/%1").arg(skinName);

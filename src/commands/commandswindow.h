@@ -6,26 +6,25 @@
 #include <QSettings>
 
 namespace Ui {
-	class CommandsWindow;
+	 class CommandsWindow;
 }
 
-class CommandsWindow : public QDialog
-{
+// @formatter:off
+class CommandsWindow : public QDialog {
 	Q_OBJECT
 
-public:
-	explicit CommandsWindow(QWidget *parent = nullptr);
-	~CommandsWindow();
+	public:
+		explicit CommandsWindow(QWidget *parent = nullptr);
+		~CommandsWindow() override;
 
-private:
-  void on_addCommandBtn_clicked();
-  void on_removeCommandBtn_clicked();
-	void on_saveBtn_clicked();
-
-	void loadData();
-	void addRow(QString command, QString response);
-
-	Ui::CommandsWindow *ui;
+	private:
+		void on_addCommandBtn_clicked();
+		void on_removeCommandBtn_clicked();
+		void on_saveBtn_clicked();
+		void loadData();
+		void addRow(const QString& command, const QString& response);
+		Ui::CommandsWindow *ui;
 };
+// @formatter:on
 
 #endif // COMMANDSWINDOW_H

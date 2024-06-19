@@ -31,28 +31,27 @@
 
 
 namespace Ui {
-	class MainWindow;
+	 class MainWindow;
 }
 
-class MainWindow : public QMainWindow
-{
+// @formatter:off
+class MainWindow : public QMainWindow {
 	Q_OBJECT
 
 	public:
 		explicit MainWindow(QWidget *parent = nullptr);
-		~MainWindow();
+		~MainWindow() override;
 
 	private slots:
-		void on_btnStart_clicked();
+		[[maybe_unused]] void on_btnStart_clicked();
 		void on_actionStart_Setup_triggered();
-		void on_actionGithub_triggered();
-		void on_actionDiscord_triggered();
-		void on_actionAbout_triggered();
-		void on_actionPreferences_triggered();
-		void on_actionSkins_triggered();
-		void on_actionCommands_triggered();
-
-		void onThemeChanged();
+		[[maybe_unused]] static void on_actionGithub_triggered();
+		[[maybe_unused]] static void on_actionDiscord_triggered();
+		[[maybe_unused]] static void on_actionAbout_triggered();
+		[[maybe_unused]] void on_actionPreferences_triggered();
+		[[maybe_unused]] void on_actionSkins_triggered();
+		[[maybe_unused]] void on_actionCommands_triggered();
+		static void onThemeChanged();
 		void onTwitchClientConnected();
 		void onGosumemoryClientConnected();
 		void onOsuIrcClientConnected();
@@ -69,9 +68,8 @@ class MainWindow : public QMainWindow
 		void setupSignals();
 		void setupStatusbar();
 		void setupUi();
-
-		QLabel *getTwitchChatMessage(QString username, QString message);
-		QString getRichTextMessage(const QString& message);
+		static QLabel *getTwitchChatMessage(const QString& username, const QString& message);
+		static QString getRichTextMessage(const QString& message);
 		Ui::MainWindow *ui;
 		TwitchClient *twitchClient;
 		TwitchCommandHandler *twitchCommandHandler;
@@ -79,10 +77,10 @@ class MainWindow : public QMainWindow
 		OsuIrcClient *osuIrcClient;
 		Updater *updater;
 		OsuApi *osuApi;
-
-		QLabel *ircConnectionLabel;
-		QLabel *twitchConnectionLabel;
-		QLabel *gosumemoryConnectionLabel;
+		QLabel *ircConnectionLabel{};
+		QLabel *twitchConnectionLabel{};
+		QLabel *gosumemoryConnectionLabel{};
 };
+// @formatter:on
 
 #endif // MAINWINDOW_H
