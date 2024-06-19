@@ -4,6 +4,7 @@
 #include <QVersionNumber>
 #include <QDebug>
 
+// @formatter:off
 class Version {
 	public:
 		Version(const QVersionNumber& version, const QString& suffix);
@@ -19,5 +20,6 @@ class Version {
 		QVersionNumber version;
 		QString suffix;
 };
+// @formatter:on
 
 #endif //MIRAYA_VERSION_H

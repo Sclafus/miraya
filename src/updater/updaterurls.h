@@ -3,11 +3,13 @@
 
 #include <QObject>
 
+// @formatter:off
 class UpdaterUrls{
 	public:
 		constexpr static const char* latestStable = "https://api.github.com/repos/MirayaProject/miraya/releases/latest";
-		constexpr static const char* allReleases = "https://api.github.com/repos/MirayaProject/miraya/releases";
+		[[maybe_unused]] constexpr static const char* allReleases = "https://api.github.com/repos/MirayaProject/miraya/releases";
 };
+// @formatter:on
 
 
 #endif //MIRAYA_UPDATERURLS_H

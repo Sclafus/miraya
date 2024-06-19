@@ -2,10 +2,7 @@
 #include "ui_skinsurl.h"
 
 SkinsUrl::SkinsUrl(GosumemoryClient *client, QWidget *parent) :
-	QDialog(parent)
-	, gosumemoryClient(client)
-	, ui(new Ui::SkinsUrl)
-{
+		QDialog(parent), gosumemoryClient(client), ui(new Ui::SkinsUrl) {
 	ui->setupUi(this);
 	loadData();
 
@@ -19,28 +16,24 @@ SkinsUrl::SkinsUrl(GosumemoryClient *client, QWidget *parent) :
 }
 
 
-SkinsUrl::~SkinsUrl()
-{
+SkinsUrl::~SkinsUrl() {
 	delete ui;
 }
 
 
-void SkinsUrl::loadData()
-{
+void SkinsUrl::loadData() {
 	qDebug() << "[Osu!Skins] Loading data";
 	QSettings settings;
 	settings.beginGroup("skin");
 	auto skins = settings.childKeys();
 
-	for (auto skin : skins)
-	{
+	for (const auto &skin: skins) {
 		addRow(skin, settings.value(skin).toString());
 	}
 }
 
 
-void SkinsUrl::on_addSkinBtn_clicked()
-{
+void SkinsUrl::on_addSkinBtn_clicked() {
 	auto skins = getListedSkins();
 	auto skinName = getSkinName();
 
@@ -53,17 +46,16 @@ void SkinsUrl::on_addSkinBtn_clicked()
 }
 
 
-void SkinsUrl::on_removeSkinBtn_clicked()
-{
+void SkinsUrl::on_removeSkinBtn_clicked() {
 	QSettings settings;
 	auto selectionModel = ui->skinURLsTable->selectionModel();
-	if (!selectionModel->hasSelection()){
+	if (!selectionModel->hasSelection()) {
 		return;
 	}
 
 	auto selected = selectionModel->selectedIndexes();
 
-	for (auto selection : selected) {
+	for (auto selection: selected) {
 		auto row = selection.row();
 		auto skinName = ui->skinURLsTable->item(row, 0)->text();
 
@@ -73,23 +65,22 @@ void SkinsUrl::on_removeSkinBtn_clicked()
 }
 
 
-void SkinsUrl::on_saveBtnClicked()
-{
+void SkinsUrl::on_saveBtnClicked() {
 	qDebug() << "[Osu!Skins] Saving data";
 
 	for (int row = 0; row < ui->skinURLsTable->rowCount(); row++) {
 		auto skinNameItem = ui->skinURLsTable->item(row, 0);
-		auto skinUrlItem  = ui->skinURLsTable->item(row, 1);
+		auto skinUrlItem = ui->skinURLsTable->item(row, 1);
 
 		if (skinUrlItem == nullptr || skinNameItem == nullptr) {
 			return;
 		}
 
 		auto skinName = skinNameItem->text();
-		auto skinUrl  = skinUrlItem->text();
+		auto skinUrl = skinUrlItem->text();
 
 		if (!isUrl(skinUrl)) {
-			QMessageBox().critical(this, "Error", "Invalid url");
+			QMessageBox::critical(this, "Error", "Invalid url");
 			break;
 		}
 
@@ -97,47 +88,44 @@ void SkinsUrl::on_saveBtnClicked()
 		QString key = QString("skin/%1").arg(skinName);
 		settings.setValue(key, skinUrl);
 	}
-  accept();
+	accept();
 }
 
 
-void SkinsUrl::on_gosumemoryMessage_received(GosuMemoryDataWrapper message)
-{
+void SkinsUrl::on_gosumemoryMessage_received(GosuMemoryDataWrapper message) {
 	ui->addSkinBtn->setEnabled(true);
 	ui->currentSkinLabel->setText(message.getSkinName());
 }
 
 
-void SkinsUrl::addRow(QString skinName, QString skinUrl)
-{
+void SkinsUrl::addRow(const QString &skinName, const QString &skinUrl) {
 	// adding new line
 	ui->skinURLsTable->insertRow(ui->skinURLsTable->rowCount());
 
 	auto skinNameItem = new QTableWidgetItem(skinName);
-	skinNameItem->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
+	skinNameItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
 	// Skin Name column
 	ui->skinURLsTable->setItem(
-		ui->skinURLsTable->rowCount() - 1,
-		0,
-		skinNameItem
+			ui->skinURLsTable->rowCount() - 1,
+			0,
+			skinNameItem
 	);
 
 	// Skin URL column
 	ui->skinURLsTable->setItem(
-		ui->skinURLsTable->rowCount() - 1,
-		1,
-		new QTableWidgetItem(skinUrl)
+			ui->skinURLsTable->rowCount() - 1,
+			1,
+			new QTableWidgetItem(skinUrl)
 	);
 }
 
 
-QStringList SkinsUrl::getListedSkins()
-{
+QStringList SkinsUrl::getListedSkins() {
 	QStringList skins;
 	for (int row = 0; row < ui->skinURLsTable->rowCount(); row++) {
 		auto value = ui->skinURLsTable->item(row, 0);
-		if (value == nullptr){
+		if (value == nullptr) {
 			continue;
 		}
 		skins << value->text();
@@ -146,14 +134,12 @@ QStringList SkinsUrl::getListedSkins()
 }
 
 
-QString SkinsUrl::getSkinName()
-{
+QString SkinsUrl::getSkinName() {
 	return ui->currentSkinLabel->text();
 }
 
 
-bool SkinsUrl::isUrl(QString url)
-{
-	QRegularExpression rx("(https?:\\/\\/)?(www)?.*\\.(.){2,}");
+bool SkinsUrl::isUrl(const QString &url) {
+	QRegularExpression rx(R"((https?:\/\/)?(www)?.*\.(.){2,})");
 	return rx.globalMatch(url).hasNext();
 }

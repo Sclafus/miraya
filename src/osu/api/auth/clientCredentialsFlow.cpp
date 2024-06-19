@@ -1,18 +1,18 @@
 #include "clientCredentialsFlow.h"
 
-QJsonObject ClientCredentialsFlow::getToken(QString clientId, QString clientSecret, QString oAuthUrl)
-{
+QJsonObject
+ClientCredentialsFlow::getToken(const QString &clientId, const QString &clientSecret, const QString &oAuthUrl) {
 	qDebug() << "[ClientCredentialsFlow] getToken";
 	QNetworkAccessManager manager;
 	QNetworkRequest request((QUrl(oAuthUrl)));
 
 	request.setHeader(
-		QNetworkRequest::ContentTypeHeader,
-		"application/x-www-form-urlencoded"
+			QNetworkRequest::ContentTypeHeader,
+			"application/x-www-form-urlencoded"
 	);
 	request.setHeader(
-		QNetworkRequest::UserAgentHeader,
-		"Miraya"
+			QNetworkRequest::UserAgentHeader,
+			"Miraya"
 	);
 
 	QUrlQuery params;

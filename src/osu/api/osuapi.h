@@ -14,8 +14,8 @@
 
 #include "api/auth/clientCredentialsFlow.h"
 
-class OsuApi : public QObject
-{
+// @formatter:off
+class OsuApi : public QObject {
 	public:
 		OsuApi();
 		QJsonObject getBeatmapInfo(int beatmapId);
@@ -27,5 +27,6 @@ class OsuApi : public QObject
 		QString oAuthUrl;
 		QJsonObject token;
 };
+// @formatter:on
 
 #endif // OSUAPI_H

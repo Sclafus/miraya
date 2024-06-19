@@ -1,26 +1,22 @@
 #include "twitchdatawrapper.h"
 
 TwitchDataWrapper::TwitchDataWrapper(QString &data)
-	: data(data)
-{
+			 : data(data) {
 	parseData();
 }
 
 
-void TwitchDataWrapper::parseData()
-{
+void TwitchDataWrapper::parseData() {
 	message = data.mid(data.indexOf(":", 1) + 1).trimmed();
 	username = data.mid(data.indexOf("!", 1) + 1, data.indexOf("!", 1) - 1);
 }
 
 
-QString TwitchDataWrapper::getMessage()
-{
+QString TwitchDataWrapper::getMessage() {
 	return message;
 }
 
 
-QString TwitchDataWrapper::getUsername()
-{
+QString TwitchDataWrapper::getUsername() {
 	return username;
 }

@@ -11,14 +11,15 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-class ClientCredentialsFlow
-{
+// @formatter:off
+class ClientCredentialsFlow {
 	public:
 		static QJsonObject getToken(
-			QString clientId,
-			QString clientSecret,
-			QString oAuthUrl = QString("https://osu.ppy.sh/oauth/token")
+			const QString &clientId,
+			const QString &clientSecret,
+			const QString &oAuthUrl = QString("https://osu.ppy.sh/oauth/token")
 		);
 };
+// @formatter:on
 
 #endif // CLIENTCREDENTIALSFLOW_H

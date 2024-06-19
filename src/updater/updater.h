@@ -14,21 +14,21 @@
 #include "updaterurls.h"
 #include "version.h"
 
-class Updater : public QObject
-{
+// @formatter:off
+class Updater : public QObject {
 	Q_OBJECT
-public:
-	explicit Updater(QObject *parent = nullptr);
-	void checkVersion();
+	public:
+		explicit Updater(QObject *parent = nullptr);
+		void checkVersion();
 
-signals:
-	void newVersionAvailable();
+	signals:
+		void newVersionAvailable();
 
-private:
-	void onReplyFinished(QNetworkReply *reply);
-//	static bool isPreRelease(const QString& version);
-	static QUrl getUrl();
-	static Version getLatestVersion(const QJsonDocument& json);
+	private:
+		void onReplyFinished(QNetworkReply *reply);
+		static QUrl getUrl();
+		static Version getLatestVersion(const QJsonDocument& json);
 };
+// @formatter:on
 
 #endif // UPDATER_H

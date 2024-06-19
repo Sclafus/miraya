@@ -1,8 +1,7 @@
 #include "theme.h"
 
 
-void Theme::loadTheme()
-{
+void Theme::loadTheme() {
 	qDebug() << "[Theme] Loading theme...";
 	QSettings settings;
 	bool isDarkMode;
@@ -12,42 +11,38 @@ void Theme::loadTheme()
 	if (darkModeSettingExists) {
 		// If present, prefer local settings.
 		loadThemeFromSetting(darkModeSetting);
-	}
-	else {
-		#ifdef Q_OS_WIN
-			loadDefaultThemeWindows();
-		#else
-			loadLightMode();
-		#endif
+	} else {
+#ifdef Q_OS_WIN
+		loadDefaultThemeWindows();
+#else
+		loadLightMode();
+#endif
 	}
 	qDebug() << "[Theme] Theme loaded";
 }
 
 
-void Theme::loadThemeFromSetting(QVariant darkModeSetting)
-{
+void Theme::loadThemeFromSetting(const QVariant &darkModeSetting) {
 	qDebug() << "[Theme] Loading theme from settings...";
 	bool isDarkMode = darkModeSetting.toBool();
 	if (isDarkMode) {
 		loadDarkMode();
-	}
-	else {
+	} else {
 		loadLightMode();
 	}
 	qDebug() << "[Theme] Theme loaded from settings";
 }
 
 
-void Theme::loadDefaultThemeWindows()
-{
+void Theme::loadDefaultThemeWindows() {
 	qDebug() << "[Theme](Windows) Loading system theme...";
 
 	// In windows>=10, you can set a default behaviour for app themes in the settings menu.
 	// TODO: Check for major and minor version of windows.
 	// Perhaps this can be used in linux and macos too?
 	QSettings windowsSettings(
-		"HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
-		QSettings::NativeFormat
+			R"(HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize)",
+			QSettings::NativeFormat
 	);
 	auto isDarkMode = windowsSettings.value("AppsUseLightTheme") == 0;
 
@@ -58,17 +53,16 @@ void Theme::loadDefaultThemeWindows()
 }
 
 
-void Theme::loadDarkMode()
-{
+void Theme::loadDarkMode() {
 	qDebug() << "[Theme] Loading dark theme...";
 	qApp->setStyle(QStyleFactory::create("Fusion"));
 	QPalette darkPalette;
-	QColor darkColor = QColor(45,45,45);
-	QColor disabledColor = QColor(127,127,127);
+	QColor darkColor = QColor(45, 45, 45);
+	QColor disabledColor = QColor(127, 127, 127);
 
 	darkPalette.setColor(QPalette::Window, darkColor);
 	darkPalette.setColor(QPalette::WindowText, Qt::white);
-	darkPalette.setColor(QPalette::Base, QColor(18,18,18));
+	darkPalette.setColor(QPalette::Base, QColor(18, 18, 18));
 	darkPalette.setColor(QPalette::AlternateBase, darkColor);
 	darkPalette.setColor(QPalette::ToolTipBase, Qt::white);
 	darkPalette.setColor(QPalette::ToolTipText, Qt::white);
@@ -89,8 +83,7 @@ void Theme::loadDarkMode()
 }
 
 
-void Theme::loadLightMode()
-{
+void Theme::loadLightMode() {
 	qDebug() << "[Theme] Loading light theme...";
 	QPalette lightPalette;
 	qApp->setPalette(lightPalette);

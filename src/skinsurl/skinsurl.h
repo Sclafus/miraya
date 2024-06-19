@@ -7,31 +7,32 @@
 #include "osu/data/gosu/gosumemorydatawrapper.h"
 
 namespace Ui {
-  class SkinsUrl;
+	 class SkinsUrl;
 }
 
-class SkinsUrl : public QDialog
-{
-  Q_OBJECT
+// @formatter:off
+class SkinsUrl : public QDialog {
+   Q_OBJECT
 
-public:
-  explicit SkinsUrl(GosumemoryClient *client, QWidget *parent = nullptr);
-  ~SkinsUrl();
+	public:
+	  explicit SkinsUrl(GosumemoryClient *client, QWidget *parent = nullptr);
+	  ~SkinsUrl() override;
 
-private:
-  void on_addSkinBtn_clicked();
-  void on_removeSkinBtn_clicked();
-  void on_gosumemoryMessage_received(GosuMemoryDataWrapper message);
-  void on_saveBtnClicked();
+	private:
+	  void on_addSkinBtn_clicked();
+	  void on_removeSkinBtn_clicked();
+	  void on_gosumemoryMessage_received(GosuMemoryDataWrapper message);
+	  void on_saveBtnClicked();
 
-  void loadData();
-  void addRow(QString skinName, QString skinUrl = "");
-  QStringList getListedSkins();
-  QString getSkinName();
-  bool isUrl(QString str);
+	  void loadData();
+	  void addRow(const QString& skinName, const QString& skinUrl = "");
+	  QStringList getListedSkins();
+	  QString getSkinName();
+	  static bool isUrl(const QString& str);
 
-  Ui::SkinsUrl *ui;
-  GosumemoryClient *gosumemoryClient;
+	  Ui::SkinsUrl *ui;
+	  GosumemoryClient *gosumemoryClient;
 };
+// @formatter:on
 
 #endif // SKINSURL_H

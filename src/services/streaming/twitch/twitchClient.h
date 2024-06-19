@@ -10,34 +10,34 @@
 
 #include "twitchdatawrapper.h"
 
+// @formatter:off
 class TwitchClient : public QObject {
 	Q_OBJECT
 
 	public:
 		explicit TwitchClient(QObject *parent = nullptr);
-		explicit TwitchClient(
-			const QUrl &url,
-			const QString &botNick,
-			const QString &oauth,
-			const QString &channel,
+		[[maybe_unused]] explicit TwitchClient(
+			QUrl url,
+			QString botNick,
+			QString oauth,
+			QString channel,
 			QObject *parent = nullptr
 		);
 		void init();
 		void restart();
-		void setChannel(QString channel);
-		void setBotNick(QString botNick);
-		void setOauth(QString oauth);
-		void setUrl(QUrl url);
-		void sendChatMessage(QString message);
+		void setChannel(QString newChannel);
+		void setBotNick(QString newBotNick);
+		void setOauth(QString newOauth);
+		void setUrl(QUrl newUrl);
+		void sendChatMessage(const QString& message);
 
 	private:
 		void handlePing();
-		bool isCommand(QString message);
+		static bool isCommand(const QString& message);
 		void initSignals();
 		void refreshData();
-		void sendMessage(QString message);
-		bool shouldBeFiltered(QString message);
-
+		void sendMessage(const QString& message);
+		bool shouldBeFiltered(const QString& message);
 		QWebSocket socket;
 		QUrl url;
 		QString oauth;
@@ -55,5 +55,6 @@ class TwitchClient : public QObject {
 		void onTextMessageReceived(QString message);
 		void onDisconnected();
 };
+// @formatter:on
 
 #endif

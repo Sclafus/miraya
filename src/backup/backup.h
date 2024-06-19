@@ -10,11 +10,12 @@
 #include <QObject>
 #include <QSettings>
 
-class Backup
-{
+// @formatter:off
+class Backup {
 	public:
 		static void backup(QString filePath, bool includeSensitiveInfo);
-		static void restore(QString filePath);
+		static void restore(const QString &filePath);
 };
+// @formatter:on
 
 #endif // BACKUP_H

@@ -78,25 +78,25 @@ void MainWindow::on_actionStart_Setup_triggered()
 }
 
 
-void MainWindow::on_actionGithub_triggered()
+[[maybe_unused]] void MainWindow::on_actionGithub_triggered()
 {
 	QDesktopServices::openUrl(QUrl("https://www.github.com/MirayaProject/miraya"));
 }
 
 
-void MainWindow::on_actionDiscord_triggered()
+[[maybe_unused]] void MainWindow::on_actionDiscord_triggered()
 {
 	QDesktopServices::openUrl(QUrl("https://www.discord.gg/anHrS7p5Sf"));
 }
 
 
-void MainWindow::on_actionAbout_triggered()
+[[maybe_unused]] void MainWindow::on_actionAbout_triggered()
 {
 	return About::show();
 }
 
 
-void MainWindow::on_actionPreferences_triggered()
+[[maybe_unused]] void MainWindow::on_actionPreferences_triggered()
 {
 	auto preferences = Preferences(this);
 	connect(&preferences, &Preferences::themeChanged, this, &MainWindow::onThemeChanged);
@@ -104,19 +104,19 @@ void MainWindow::on_actionPreferences_triggered()
 }
 
 
-void MainWindow::on_actionSkins_triggered()
+[[maybe_unused]] void MainWindow::on_actionSkins_triggered()
 {
 	SkinsUrl(gosumemoryClient, this).exec();
 }
 
 
-void MainWindow::on_actionCommands_triggered()
+[[maybe_unused]] void MainWindow::on_actionCommands_triggered()
 {
 	CommandsWindow(this).exec();
 }
 
 
-void MainWindow::on_btnStart_clicked()
+[[maybe_unused]] void MainWindow::on_btnStart_clicked()
 {
 	qDebug() << "[MainWindow] init";
 	twitchClient->restart();
@@ -145,7 +145,7 @@ void MainWindow::onGosumemoryClientMessageReceived(GosuMemoryDataWrapper message
 void MainWindow::onTwitchClientMessageReceived(TwitchDataWrapper message)
 {
 	// TODO: this should not be here
-	for (QString url : Utils::getOsuBeatmapUrls(message.getMessage())) {
+	for (const QString& url : Utils::getOsuBeatmapUrls(message.getMessage())) {
 		qDebug() << "[MainWindow] Osu beatmap url: " << url;
 
 		int beatmapId = Utils::getBeatmapIdFromOsuBeatmapLink(url);
@@ -161,7 +161,7 @@ void MainWindow::onTwitchClientMessageReceived(TwitchDataWrapper message)
 
 	QLabel* label = getTwitchChatMessage(message.getUsername(), message.getMessage());
 	label->adjustSize();
-	QListWidgetItem* item = new QListWidgetItem(ui->twitchChat);
+	auto* item = new QListWidgetItem(ui->twitchChat);
 	item->setSizeHint(label->size()); // Set the size hint based on the label's size
 	ui->twitchChat->addItem(item);
 	ui->twitchChat->setItemWidget(item, label);
@@ -172,7 +172,7 @@ void MainWindow::onTwitchClientMessageReceived(TwitchDataWrapper message)
 void MainWindow::onNewVersionReceived()
 {
 	qDebug() << "[MainWindow] New version available";
-	QMessageBox().information(
+	QMessageBox::information(
 		this,
 		"New Version Available",
 		"There is a new version available! Click <a href='https://github.com/MirayaProject/miraya/releases/latest'>here</a> to check it out!",
@@ -181,10 +181,10 @@ void MainWindow::onNewVersionReceived()
 }
 
 
-QLabel* MainWindow::getTwitchChatMessage(QString username, QString message)
+QLabel* MainWindow::getTwitchChatMessage(const QString& username, const QString& message)
 {
 	QString richTextMsg = getRichTextMessage(message);
-	QLabel* label = new QLabel();
+	auto *label = new QLabel();
 
 	QFont font = label->font();
 	font.setPointSize(12);
@@ -196,7 +196,8 @@ QLabel* MainWindow::getTwitchChatMessage(QString username, QString message)
 	label->setOpenExternalLinks(true);
 
 	label->setWordWrap(true);
-	label->setText(QString("<b>%1</b>: %2").arg(username).arg(richTextMsg));
+    auto chatMessage = QString("<b>%1</b>: %2").arg(username, richTextMsg);
+	label->setText(chatMessage);
 	label->setMaximumHeight(qMax(label->sizeHint().height(), 44)); //noqa
 	return label;
 }
@@ -206,7 +207,7 @@ QString MainWindow::getRichTextMessage(const QString& message)
 {
 	auto urls = Utils::getUrls(message);
 	QString substitutedMessage = message;
-	for (auto url : urls){
+	for (const auto& url : urls){
 		substitutedMessage.replace(url, QString("<a href='%1'>%1</a>").arg(url));
 	}
 	return substitutedMessage;

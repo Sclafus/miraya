@@ -2,21 +2,18 @@
 #include "ui_setupwizard.h"
 
 SetupWizard::SetupWizard(QWidget *parent) :
-	QWizard(parent),
-	ui(new Ui::SetupWizard)
-{
+			 QWizard(parent),
+			 ui(new Ui::SetupWizard) {
 	ui->setupUi(this);
 	setupUi();
 }
 
-SetupWizard::~SetupWizard()
-{
+SetupWizard::~SetupWizard() {
 	delete ui;
 }
 
 
-void SetupWizard::setupUi()
-{
+void SetupWizard::setupUi() {
 	// TODO: this should be a standalone widget.
 	auto *portValidator = new QIntValidator(0, 65535, this);
 	ui->gosumemoryPortLineEdit->setValidator(portValidator);
@@ -25,12 +22,12 @@ void SetupWizard::setupUi()
 	// TODO: this should be a standalone widget.
 	QString IpRange = "(?:[0-1]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])";
 	QRegularExpression IpRegex("^" + IpRange + "\\." + IpRange + "\\." + IpRange + "\\." + IpRange + "$");
-	QRegularExpressionValidator *IpValidator = new QRegularExpressionValidator(IpRegex, this);
+	auto *IpValidator = new QRegularExpressionValidator(IpRegex, this);
 	ui->gosumemoryIpLineEdit->setValidator(IpValidator);
 
 	// TODO: this should be a standalone widget.
 	QRegularExpression oauthRegex("^oauth:.{30}$");
-	QRegularExpressionValidator *oauthValidator = new QRegularExpressionValidator(oauthRegex, this);
+	auto *oauthValidator = new QRegularExpressionValidator(oauthRegex, this);
 	ui->twitchOauthLineEdit->setValidator(oauthValidator);
 
 	ui->gosumemoryExplanationLabel->setOpenExternalLinks(true);
@@ -39,8 +36,7 @@ void SetupWizard::setupUi()
 }
 
 
-void SetupWizard::on_SetupWizard_finished(int result)
-{
+[[maybe_unused]] void SetupWizard::on_SetupWizard_finished(int result) {
 	if (result == 1) {
 		QJsonObject data = gatherData();
 		saveData(data);
@@ -50,8 +46,7 @@ void SetupWizard::on_SetupWizard_finished(int result)
 }
 
 
-QJsonObject SetupWizard::gatherData()
-{
+QJsonObject SetupWizard::gatherData() {
 	QJsonObject data;
 	data["gosumemory"] = getGosumemoryData();
 	data["osuapi"] = getOsuApiData();
@@ -62,50 +57,46 @@ QJsonObject SetupWizard::gatherData()
 }
 
 
-QJsonObject SetupWizard::getGosumemoryData()
-{
+QJsonObject SetupWizard::getGosumemoryData() {
 	QString gosuIp = ui->gosumemoryIpLineEdit->text();
 	int gosuPort = ui->gosumemoryPortLineEdit->text().toInt();
 
 	QJsonObject gosumemoryData = QJsonObject{
-		{"ip", gosuIp},
-		{"port", gosuPort}
+				 {"ip",   gosuIp},
+				 {"port", gosuPort}
 	};
 
 	return gosumemoryData;
 }
 
-QJsonObject SetupWizard::getOsuApiData()
-{
+QJsonObject SetupWizard::getOsuApiData() {
 	int osuapiClientId = ui->osuapiClientIdLineEdit->text().toInt();
 	QString osuapiClientSecret = ui->osuapiClientSecretLineEdit->text();
 
 	QJsonObject osuapiClientData = QJsonObject{
-		{"clientId", osuapiClientId},
-		{"clientSecret", osuapiClientSecret}
+				 {"clientId",     osuapiClientId},
+				 {"clientSecret", osuapiClientSecret}
 	};
 
 	return osuapiClientData;
 }
 
-QJsonObject SetupWizard::getTwitchData()
-{
+QJsonObject SetupWizard::getTwitchData() {
 	QString twitchBotNick = ui->twitchBotNickLineEdit->text();
 	QString twitchOauth = ui->twitchOauthLineEdit->text();
 	QString twitchChannel = ui->twitchChannelLineEdit->text();
 
 	QJsonObject twitchData = QJsonObject{
-		{"botNick", twitchBotNick.toLower()},
-		{"oauth", twitchOauth},
-		{"channel", twitchChannel.toLower()}
+				 {"botNick", twitchBotNick.toLower()},
+				 {"oauth",   twitchOauth},
+				 {"channel", twitchChannel.toLower()}
 	};
 
 	return twitchData;
 }
 
 
-QJsonObject SetupWizard::getOsuircData()
-{
+QJsonObject SetupWizard::getOsuircData() {
 	QString osuircNick = ui->osuircNickLineEdit->text();
 	QString osuircPassword = ui->osuircPasswordLineEdit->text();
 	QString osuircServer = ui->osuircServerLineEdit->text();
@@ -116,19 +107,18 @@ QJsonObject SetupWizard::getOsuircData()
 	osuircNick.replace(' ', '_');
 
 	QJsonObject osuircData = QJsonObject{
-		{"nick", osuircNick},
-		{"password", osuircPassword},
-		{"server", osuircServer},
-		{"port", osuircPort}
+				 {"nick",     osuircNick},
+				 {"password", osuircPassword},
+				 {"server",   osuircServer},
+				 {"port",     osuircPort}
 	};
 
 	return osuircData;
 }
 
 
-void SetupWizard::saveData(QJsonObject data)
-{
-  QSettings settings;
+void SetupWizard::saveData(QJsonObject data) {
+	QSettings settings;
 	QJsonObject osuapiData = data["osuapi"].toObject();
 	QJsonObject gosumemoryData = data["gosumemory"].toObject();
 	QJsonObject twitchData = data["twitch"].toObject();
